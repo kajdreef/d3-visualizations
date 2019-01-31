@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+</head>
+
+<body>
+    <div id="vis" style="position:fixed; left:0px; right:0px; top:0px; bottom:0px;"></div>
+</body>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="history-graph/weighted-graph.js"></script>
+<script>
+    d3.json("https://gist.githubusercontent.com/kajdreef/1d98aa296ec86cd2c79af83f79096a81/raw/1354f562390255fa7db377e14638095f391441ae/gitql_history_file_change.json", (error, data) => {
+        if (error) {
+            console.log("Error parsing the data...");
+            throw error;
+        }
+        let visualization = weightedGraph().width(800).height(800).nodeRadius(5);
+        d3.select('#vis').datum(data).call(visualization);
+    });
+</script>
+
+</html>
