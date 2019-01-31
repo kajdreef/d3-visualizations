@@ -2,6 +2,7 @@ weightedGraph = function () {
     let width = 400,
     height = 400,
     node_radius = 5,
+    text_size = "11px",
     selection,
     svg;
     
@@ -15,10 +16,9 @@ weightedGraph = function () {
 
         svg = selection.append("svg")
             .attr("width", width)
-            .attr("height", height)
-            .attr("viewBox", [-width / 2, -height / 2, width, height]);
+            .attr("height", height);
 
-        let linkStrengthScale = d3.scaleLinear()
+        let linkStrengthScale = d3.scaleLog()
             .range([0, 0.5])
             .domain(d3.extent(links, d => d.weight));
 
@@ -32,7 +32,7 @@ weightedGraph = function () {
             .force("link", d3.forceLink(links).id(d => d.id).strength(d => Math.sqrt(linkStrengthScale(d.weight))))
             .force("charge", d3.forceManyBody())
             .force("collide", d3.forceCollide().radius(30))
-            .force("center", d3.forceCenter())
+            .force("center", d3.forceCenter(width/2, height/2))
             .on("tick", ticked);
 
         function ticked(e) {
@@ -90,7 +90,7 @@ weightedGraph = function () {
         }
 
         function dragstarted() {
-            if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+            if (!d3.event.active) simulation.alphaTarget(0.1).restart();
             d3.event.subject.fx = d3.event.subject.x;
             d3.event.subject.fy = d3.event.subject.y;
         }
@@ -133,6 +133,16 @@ weightedGraph = function () {
         }
         else {
             node_radius = radius;
+        }
+        return chart;
+    };
+
+    chart.textSize = function (size) {
+        if (!arguments.length) {
+            return text_size;
+        }
+        else {
+            text_size = size;
         }
         return chart;
     };
