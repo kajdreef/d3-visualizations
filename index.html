@@ -7,15 +7,23 @@
 <body>
     <div id="vis" style="position:fixed; left:0px; right:0px; top:0px; bottom:0px;"></div>
 </body>
-<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="lib/d3.v4.min.js"></script>
 <script src="history-graph/weighted-graph.js"></script>
 <script>
-    d3.json("https://gist.githubusercontent.com/kajdreef/1d98aa296ec86cd2c79af83f79096a81/raw/1354f562390255fa7db377e14638095f391441ae/gitql_history_file_change.json", (error, data) => {
+    let project = "https://gist.githubusercontent.com/kajdreef/455e9fc97c4729b877c1d89bf9e5e72b/raw/bb9ef79a4d0439fbea7a8bcb32cb31e829ef9a91/blinky_history_file.json";
+    // let project = "https://gist.githubusercontent.com/kajdreef/1d98aa296ec86cd2c79af83f79096a81/raw/1354f562390255fa7db377e14638095f391441ae/gitql_history_file_change.json";
+    d3.json(project, (error, data) => {
         if (error) {
             console.log("Error parsing the data...");
             throw error;
         }
-        let visualization = weightedGraph().width(800).height(800).nodeRadius(5);
+        let visDiv = document.getElementById("vis"),
+        w = visDiv.clientWidth,
+        h = visDiv.clientHeight;
+
+        let visualization = weightedGraph().width(w).height(h).nodeRadius(5);
+        
+
         d3.select('#vis').datum(data).call(visualization);
     });
 </script>

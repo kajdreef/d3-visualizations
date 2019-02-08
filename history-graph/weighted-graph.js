@@ -3,6 +3,7 @@ weightedGraph = function () {
     height = 400,
     node_radius = 5,
     text_size = "11px",
+    text_x = 6, text_y = 3,
     selection,
     svg;
     
@@ -29,25 +30,28 @@ weightedGraph = function () {
 
 
         const simulation = d3.forceSimulation(nodes)
-            .force("link", d3.forceLink(links).id(d => d.id).strength(d => Math.sqrt(linkStrengthScale(d.weight))))
+            .force("link", d3.forceLink(links).id(d => d.id))//.strength(d => Math.sqrt(linkStrengthScale(d.weight))))
             .force("charge", d3.forceManyBody())
             .force("collide", d3.forceCollide().radius(30))
             .force("center", d3.forceCenter(width/2, height/2))
             .on("tick", ticked);
 
         function ticked(e) {
-            link.attr("x1", d => d.source.x)
-                .attr("y1", d => d.source.y)
-                .attr("x2", d => d.target.x)
-                .attr("y2", d => d.target.y);
+            circles
+                .attr("cx", function (d) { return d.x = Math.max(node_radius, Math.min(width - node_radius, d.x)); })
+                .attr("cy", function (d) { return d.y = Math.max(node_radius, Math.min(height - node_radius, d.y)); });
 
-            node.attr("transform", d => "translate(" + d.x + "," + d.y + ")");
+            labels.attr("x", function (d) { return d.x = Math.min(width -text_x, d.x + text_x)})
+                .attr("y", function (d) { return d.y = Math.min(height - text_y, d.y+ text_y)});
+
+            link
+                .attr("x1", function (d) { return d.source.x; })
+                .attr("y1", function (d) { return d.source.y; })
+                .attr("x2", function (d) { return d.target.x; })
+                .attr("y2", function (d) { return d.target.y; });
         };
 
-        const g = svg.append("g")
-            .attr("class", "everything");
-
-        const link = g.append("g")
+        const link = svg.append("g")
             .attr("class", "links")
             .selectAll("line")
             .data(links)
@@ -59,22 +63,23 @@ weightedGraph = function () {
         link.append("title")
             .text(d => d.weight);
 
-        const node = g.append("g")
+        const node = svg.append("g")
             .attr("class", "nodes")
             .selectAll("g")
             .data(nodes)
             .enter().append("g")
 
         const labels = node.append("text")
+            .attr("class", "label")
             .text(d => d.name)
-            .attr('x', 6)
-            .attr('y', 3)
+            .attr('x', text_x)
+            .attr('y', text_y)
             .style('fill', 'black')
             .style("font-size", "10px");
 
         var circles = node.append("circle")
-            .attr("r", node_radius)
-            .attr("fill", color);
+            .attr("class", "cirles")
+            .attr("r", node_radius);
         
         d3.select(selection.node())
             .call(d3.drag()
@@ -83,7 +88,6 @@ weightedGraph = function () {
                 .on("start", dragstarted)
                 .on("drag", dragged)
                 .on("end", dragended));
-
 
         function dragsubject() {
             return simulation.find(d3.event.x, d3.event.y);

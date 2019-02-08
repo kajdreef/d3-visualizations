@@ -11,3 +11,4 @@ Then you can view the visualization following in your browser at [](http://local
 
 + Hovering: highlight links and nodes directly connected to one node
 + Zooming: allow to zoom in on busy areas.
++ Screen resize: resize the visualization.
