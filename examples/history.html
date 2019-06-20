@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+</head>
+
+<body>
+    <div id="vis" style="position:fixed; left:0px; right:0px; top:0px; bottom:0px;"></div>
+</body>
+<script src="../lib/d3.v4.min.js"></script>
+<script src="../visualizations/weighted-graph.js"></script>
+<script>
+    // let project = "https://gist.githubusercontent.com/kajdreef/455e9fc97c4729b877c1d89bf9e5e72b/raw/bb9ef79a4d0439fbea7a8bcb32cb31e829ef9a91/blinky_history_file.json";
+    // let project = "https://gist.githubusercontent.com/kajdreef/1d98aa296ec86cd2c79af83f79096a81/raw/1354f562390255fa7db377e14638095f391441ae/gitql_history_file_change.json";
+
+    // History helloworld
+    // let project = "https://gist.githubusercontent.com/kajdreef/09fae81909eedef79b42f2bde88b31a9/raw/ea4f065c9448d39f86e5e32a26846c7e556b39b5/gistfile1.txt";
+    
+    // Static helloworld
+    let project = "https://gist.githubusercontent.com/kajdreef/bc5769a8cdc5c8a9f9ee84ba03235a81/raw/283df17aa1ae7f8c14f50ac9a40c54e56f557412/static.json";
+    
+    d3.json(project, (error, data) => {
+        if (error) {
+            console.log("Error parsing the data...");
+            throw error;
+        }
+        let visDiv = document.getElementById("vis"),
+        w = visDiv.clientWidth,
+        h = visDiv.clientHeight;
+
+        let visualization = weightedGraph().width(w).height(h).nodeRadius(5);
+        
+        d3.select('#vis').datum(data).call(visualization);
+    });
+</script>
+
+</html>
